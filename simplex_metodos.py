@@ -25,9 +25,9 @@ class simplex:
     def setMatriz (self,m,t):
         self.matriz = m
         self.tipoFunc = t
-        n = self.matriz[0]
+        n = self.matriz[0][0]
         self.quantVar = len(n) - 1 
-        self.quantEqua = len(self.matriz) - 1
+        self.quantEqua = len(self.matriz[0]) - 1
         #self.objFunc = self.matriz[len(self.matriz)-1]
         
         #self.variaveisBasicas = self.quantVar -self.quantEqua
@@ -50,10 +50,10 @@ class simplex:
         
         while 1 :
             for x in range(0,self.quantVar):
-                if(self.matriz[self.quantEqua][x] < 0):
+                if(self.matriz[0][self.quantEqua][x] < 0):
                     for y in range(0,self.quantEqua):
-                         if(self.matriz[y][x] > 0):
-                             varDict[float(self.matriz[y][self.quantVar]/self.matriz[y][x])] = y
+                         if(self.matriz[0][y][x] > 0):
+                             varDict[float(self.matriz[0][y][self.quantVar]/self.matriz[0][y][x])] = y
                     if(len(varDict)==0):
                         print("solução Ilimitada")
                         flagIlimitado = 1
@@ -64,9 +64,9 @@ class simplex:
                     for z in range(0,self.quantEqua+1):
                         if(z==y):
                             continue
-                        multiplicador =  float(self.matriz[z][x] * (-1) / self.matriz[y][x])
+                        multiplicador =  float(self.matriz[0][z][x] * (-1) / self.matriz[0][y][x])
                         for a in range (0,self.quantVar + 1):
-                            self.matriz[z][a] += multiplicador * self.matriz[y][a] #+ self.matriz[z][a]
+                            self.matriz[0][z][a] += multiplicador * self.matriz[0][y][a] #+ self.matriz[z][a]
                             
                     break
                 elif(x == self.quantVar-1):
@@ -84,14 +84,14 @@ class simplex:
         flagVB = 0
         
         for x in range(0,self.quantVar):
-            self.matriz[self.quantEqua][x] *= (-1)
-        
+            self.matriz[0][self.quantEqua][x] *= (-1)
+            
         while 1 :
             for x in range(0,self.quantVar):
-                if(self.matriz[self.quantEqua][x] > 0):
+                if(self.matriz[0][self.quantEqua][x] < 0):
                     for y in range(0,self.quantEqua):
-                         if(self.matriz[y][x] > 0):
-                             varDict[float(self.matriz[y][self.quantVar]/self.matriz[y][x])] = y
+                         if(self.matriz[0][y][x] > 0):
+                             varDict[float(self.matriz[0][y][self.quantVar]/self.matriz[0][y][x])] = y
                     if(len(varDict)==0):
                         print("solução Ilimitada")
                         flagIlimitado = 1
@@ -102,9 +102,9 @@ class simplex:
                     for z in range(0,self.quantEqua+1):
                         if(z==y):
                             continue
-                        multiplicador =  float(self.matriz[z][x] * (-1) / self.matriz[y][x])
+                        multiplicador =  float(self.matriz[0][z][x] * (-1) / self.matriz[0][y][x])
                         for a in range (0,self.quantVar + 1):
-                            self.matriz[z][a] += multiplicador * self.matriz[y][a] #+ self.matriz[z][a]
+                            self.matriz[0][z][a] += multiplicador * self.matriz[0][y][a] #+ self.matriz[z][a]
                             
                     break
                 elif(x == self.quantVar-1):
@@ -115,7 +115,8 @@ class simplex:
                 break
             if(flagVB):
                 break
-        self.matriz[self.quantEqua][self.quantVar] *= (-1)
+    
+        self.matriz[0][self.quantEqua][self.quantVar] *= (-1)
             
             
                 
