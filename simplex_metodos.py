@@ -19,15 +19,14 @@ class simplex:
     quantVar = 0 #define a quantidade de variaveis xn do problema
     quantEqua = 0 #define a quantidade de equacoes
     #self.terInd = [] #matriz que define os termos independentes
-    variaveisBasicas = []
-    variaveisNaoBasicas = []
+    variaveisBasicas = {}
+    variaveisNaoBasicas = {}
     
     def setMatriz (self,m,t):
         self.matriz = m
         self.tipoFunc = t
-        n = self.matriz[0][0]
-        self.quantVar = len(n) - 1 
-        self.quantEqua = len(self.matriz[0]) - 1
+        self.quantVar = len(self.matriz[0]) - 1 
+        self.quantEqua = len(self.matriz) - 1
         #self.objFunc = self.matriz[len(self.matriz)-1]
         
         #self.variaveisBasicas = self.quantVar -self.quantEqua
@@ -50,10 +49,10 @@ class simplex:
         
         while 1 :
             for x in range(0,self.quantVar):
-                if(self.matriz[0][self.quantEqua][x] < 0):
+                if(self.matriz[self.quantEqua][x] < 0):
                     for y in range(0,self.quantEqua):
-                         if(self.matriz[0][y][x] > 0):
-                             varDict[float(self.matriz[0][y][self.quantVar]/self.matriz[0][y][x])] = y
+                         if(self.matriz[y][x] > 0):
+                             varDict[float(self.matriz[y][self.quantVar]/self.matriz[y][x])] = y
                     if(len(varDict)==0):
                         print("solução Ilimitada")
                         flagIlimitado = 1
@@ -64,9 +63,9 @@ class simplex:
                     for z in range(0,self.quantEqua+1):
                         if(z==y):
                             continue
-                        multiplicador =  float(self.matriz[0][z][x] * (-1) / self.matriz[0][y][x])
+                        multiplicador =  float(self.matriz[z][x] * (-1) / self.matriz[y][x])
                         for a in range (0,self.quantVar + 1):
-                            self.matriz[0][z][a] += multiplicador * self.matriz[0][y][a] #+ self.matriz[z][a]
+                            self.matriz[z][a] += multiplicador * self.matriz[y][a] #+ self.matriz[z][a]
                             
                     break
                 elif(x == self.quantVar-1):
@@ -76,7 +75,9 @@ class simplex:
             if(flagIlimitado):
                 break
             if(flagVB):
+                self.set_var()
                 break
+            
     #Transformar o problema de maximização em um de minimização            
     def calc_max(self):
         varDict = {}
@@ -84,14 +85,14 @@ class simplex:
         flagVB = 0
         
         for x in range(0,self.quantVar):
-            self.matriz[0][self.quantEqua][x] *= (-1)
+            self.matriz[self.quantEqua][x] *= (-1)
             
         while 1 :
             for x in range(0,self.quantVar):
-                if(self.matriz[0][self.quantEqua][x] < 0):
+                if(self.matriz[self.quantEqua][x] < 0):
                     for y in range(0,self.quantEqua):
-                         if(self.matriz[0][y][x] > 0):
-                             varDict[float(self.matriz[0][y][self.quantVar]/self.matriz[0][y][x])] = y
+                         if(self.matriz[y][x] > 0):
+                             varDict[float(self.matriz[y][self.quantVar]/self.matriz[y][x])] = y
                     if(len(varDict)==0):
                         print("solução Ilimitada")
                         flagIlimitado = 1
@@ -102,9 +103,9 @@ class simplex:
                     for z in range(0,self.quantEqua+1):
                         if(z==y):
                             continue
-                        multiplicador =  float(self.matriz[0][z][x] * (-1) / self.matriz[0][y][x])
+                        multiplicador =  float(self.matriz[z][x] * (-1) / self.matriz[y][x])
                         for a in range (0,self.quantVar + 1):
-                            self.matriz[0][z][a] += multiplicador * self.matriz[0][y][a] #+ self.matriz[z][a]
+                            self.matriz[z][a] += multiplicador * self.matriz[y][a] #+ self.matriz[z][a]
                             
                     break
                 elif(x == self.quantVar-1):
@@ -114,9 +115,21 @@ class simplex:
             if(flagIlimitado):
                 break
             if(flagVB):
+                self.set_var()
                 break
     
-        self.matriz[0][self.quantEqua][self.quantVar] *= (-1)
+        self.matriz[self.quantEqua][self.quantVar] *= (-1)
+    
+    def set_var(self):
+        for x in range(0,self.quantVar):
+            if(self.matriz[self.quantEqua][x] == 0):
+                for y in range(0,self.quantEqua):
+                    if(y==1):
+                        self.variaveisBasicas[x+1]=self.matriz[y][self.quantVar]
+                        break
+            else:
+                self.variaveisNaoBasicas[x+1] = 0
+            
             
             
                 
