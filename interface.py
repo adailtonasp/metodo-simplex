@@ -8,9 +8,9 @@ class Application:
         self.textRestrincao = ""
         self.numeroVariaveis = 0
         self.numeroVariaveisRes = 0
-        self.funcaoObjetiva = list()
-        self.listaRestrincoes = list()
-        self.restrincaoL = []
+        self.funcaoObjetiva = list()  #lista que fica os coeficientes da função objetivo
+        #self.listaRestrincoes = list()
+        self.restrincaoL = [] #matriz das restrições
         self.aux = [] #adicionado para fazer uma matriz das restrições
         ######################################################
 
